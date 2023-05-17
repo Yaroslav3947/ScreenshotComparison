@@ -12,7 +12,7 @@ ScreenshotSnap::~ScreenshotSnap() {
 }
 
 void ScreenshotSnap::startSnap() {
-    const int MINUTE_IN_MILLISECONDS = 60000;
+    const int MINUTE_IN_MILLISECONDS = 6000;
 
     snapScreen();
     _timer->start(MINUTE_IN_MILLISECONDS);

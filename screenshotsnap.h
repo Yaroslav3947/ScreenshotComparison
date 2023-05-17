@@ -10,7 +10,7 @@ class ScreenshotSnap : public QObject {
     Q_OBJECT
 
 public:
-    ScreenshotSnap(QObject *parent = nullptr);
+    explicit ScreenshotSnap(QObject *parent = nullptr);
     ~ScreenshotSnap();
 
 private:
