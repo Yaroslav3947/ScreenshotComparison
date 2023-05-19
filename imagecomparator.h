@@ -13,10 +13,4 @@ public:
 
     double getSimilarityPercentage(const QImage &image1, const QImage &image2);
     QByteArray calculateHash(const QImage &screenshot);
-
-private:
-    int calculateHammingDistance(const QString &hash1, const QString &hash2);
-
-
 };
-

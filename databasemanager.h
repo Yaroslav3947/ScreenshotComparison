@@ -17,11 +17,10 @@ public:
 
     void initialize();
     void storeComparisonResult(const QImage &screenshot1, const QImage &screenshot2,
-                               const QString &hash1, const QString &hash2, const double &similarity);
+                               const QByteArray &hash1, const QByteArray &hash2, const double &similarity);
     QList<ComparisonResult> getComparisonResults();
 
 private:
     QSqlDatabase _database;
 
 };
-

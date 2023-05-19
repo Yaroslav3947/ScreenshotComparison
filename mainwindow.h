@@ -1,13 +1,10 @@
 #pragma once
 
-#include <QLabel>
 #include <QMainWindow>
-#include <QGridLayout>
-#include <QPushButton>
-
 
 #include "screenshotsnap.h"
 #include "imagecomparator.h"
+#include "databasemanager.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -27,10 +24,12 @@ private slots:
     void manageNewScreenshot(const QImage &screenshot);
 
 private:
+    void displayLastScreenshot();
     void connectSignalsAndSlots();
 
     std::unique_ptr<ImageComparator> _imageComparator;
     std::unique_ptr<ScreenshotSnap> _screenshotSnap;
+    std::unique_ptr<DatabaseManager> _databaseManager;
 
     Ui::MainWindow *ui;
 };

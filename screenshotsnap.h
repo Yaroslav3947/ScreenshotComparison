@@ -27,4 +27,3 @@ private slots:
 signals:
     void newScreenshot(const QImage &screenshot);
 };
-

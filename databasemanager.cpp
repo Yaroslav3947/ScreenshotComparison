@@ -1,5 +1,6 @@
 #include "databasemanager.h"
 
+
 DatabaseManager::DatabaseManager(QObject *parent)
     : QObject{parent} {
 }
@@ -17,13 +18,13 @@ void DatabaseManager::initialize() {
     _database.setDatabaseName("C:/Users/Yaroslav/Documents/ScreenshotComparison/snapshots.db");
 
     if (!_database.open()) {
-        QMessageBox::warning(nullptr, "Error", "Problems opening snapshots.db");
+        QMessageBox::warning(nullptr, "Error", "Problems initializing snapshots.db");
         return;
     }
 }
 
 void DatabaseManager::storeComparisonResult(const QImage &screenshot1, const QImage &screenshot2,
-                                            const QString &hash1, const QString &hash2, const double &similarity) {
+                                            const QByteArray &hash1, const QByteArray &hash2, const double &similarity) {
     QSqlDatabase database = QSqlDatabase::database();
 
     if (!database.isValid()) {
@@ -58,14 +59,14 @@ void DatabaseManager::storeComparisonResult(const QImage &screenshot1, const QIm
 }
 
 QList<ComparisonResult> DatabaseManager::getComparisonResults() {
-    QList<ComparisonResult> results;
+    QList<ComparisonResult> comparisonResults;
 
     QSqlQuery query(_database);
     query.prepare("SELECT image1, image2, hash1, hash2, similarity FROM snapshots");
 
     if (!query.exec()) {
         QMessageBox::warning(nullptr, "Error", "Problems getting data from snapshots.db");
-        return results;
+        return comparisonResults;
     }
 
     while (query.next()) {
@@ -80,16 +81,16 @@ QList<ComparisonResult> DatabaseManager::getComparisonResults() {
         QImage image2;
         image2.loadFromData(image2Data);
 
-        QString hash1 = query.value("hash1").toString();
-        QString hash2 = query.value("hash2").toString();
+        QByteArray hash1 = query.value("hash1").toByteArray();
+        QByteArray hash2 = query.value("hash2").toByteArray();
 
         result.setScreenshot1(image1);
         result.setScreenshot2(image2);
         result.setHash1(hash1);
         result.setHash2(hash2);
 
-        results.append(result);
+        comparisonResults.append(result);
     }
 
-    return results;
+    return comparisonResults;
 }

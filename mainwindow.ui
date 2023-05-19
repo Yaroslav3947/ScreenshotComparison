@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>810</width>
-    <height>600</height>
+    <width>1314</width>
+    <height>681</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,40 +17,17 @@
    <widget class="QLabel" name="similarityPercentageLabel">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>450</y>
-      <width>271</width>
+      <x>450</x>
+      <y>570</y>
+      <width>301</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
-   </widget>
-   <widget class="QPushButton" name="startButton">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>490</y>
-      <width>141</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Start</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="stopButton">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>490</y>
-      <width>141</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Stop</string>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QWidget" name="gridLayoutWidget">
@@ -58,26 +35,68 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>811</width>
-      <height>411</height>
+      <width>1311</width>
+      <height>531</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="2">
-      <widget class="QLabel" name="currentScreenshotLabel">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="3">
       <widget class="QLabel" name="previousScreenshotLabel">
        <property name="text">
-        <string>TextLabel</string>
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="currentScreenshotLabel">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QFrame" name="buttonFrame">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>600</y>
+      <width>300</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="startButton">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>141</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="stopButton">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>0</y>
+       <width>141</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Stop</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>
