@@ -22,9 +22,6 @@ double SimilarityCalculator::getSimilarityPercentage(const QImage &image1, const
 
     double similarityPercentage = static_cast<double>(count) / static_cast<double>(image1.width() * image1.height()) * 100.0;
 
-    emit similarityPercentageCalculated(similarityPercentage);
-    emit calculationFinished();
-
     return similarityPercentage;
 }
 

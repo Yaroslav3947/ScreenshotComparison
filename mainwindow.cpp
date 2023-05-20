@@ -24,6 +24,12 @@ void MainWindow::connectSignalsAndSlots() {
     connect(_screenshotSnap.get(), &ScreenshotSnap::newScreenshot, this, &MainWindow::manageNewScreenshot);
 }
 
+void MainWindow::setLabelImage(QLabel *label, const QImage &image) {
+    QPixmap pixmap = QPixmap::fromImage(image);
+    label->setPixmap(pixmap);
+    label->setScaledContents(true);
+}
+
 void MainWindow::startSnap() {
     ui->startButton->setEnabled(false);
     ui->stopButton->setEnabled(true);
@@ -36,49 +42,32 @@ void MainWindow::stopSnap() {
     _screenshotSnap->stopSnap();
 }
 
+QPixmap MainWindow::getCurrentPixmap() {
+    return ui->currentScreenshotLabel->pixmap();
+}
+
 void MainWindow::manageNewScreenshot(const QImage &newScreenshot) {
-    QPixmap currentPixmap = ui->currentScreenshotLabel->pixmap();
+    QPixmap currentPixmap = getCurrentPixmap();
 
-    ui->currentScreenshotLabel->setPixmap(QPixmap::fromImage(newScreenshot));
-    ui->currentScreenshotLabel->setScaledContents(true);
+    setLabelImage(ui->currentScreenshotLabel, newScreenshot);
+    setLabelImage(ui->previousScreenshotLabel, currentPixmap.toImage());
 
-    ui->previousScreenshotLabel->setPixmap(currentPixmap);
-    ui->previousScreenshotLabel->setScaledContents(true);
+    SimilarityCalculationTask* task = new SimilarityCalculationTask(newScreenshot, currentPixmap, _imageComparator.get());
 
-    QThread* thread = new QThread(this);
-    SimilarityCalculator *similarityCalculator = new SimilarityCalculator();
-
-    similarityCalculator->moveToThread(thread);
-    connect(thread, &QThread::started, similarityCalculator, [this, newScreenshot, currentPixmap, similarityCalculator]() {
-        double similarityPercentage = similarityCalculator->getSimilarityPercentage(newScreenshot, currentPixmap.toImage());
-        QByteArray hash1 = _imageComparator->calculateHash(newScreenshot);
-        QByteArray hash2 = _imageComparator->calculateHash(currentPixmap.toImage());
-
-        ComparisonResult result;
-        result.setScreenshot1(newScreenshot);
-        result.setScreenshot2(currentPixmap.toImage());
-        result.setHash1(hash1);
-        result.setHash2(hash2);
-
-        QMetaObject::invokeMethod(this, "handleSimilarityCalculationFinished",
-                                  Qt::QueuedConnection,
-                                  Q_ARG(ComparisonResult, result),
-                                  Q_ARG(double, similarityPercentage));
-
-        QMetaObject::invokeMethod(similarityCalculator, &SimilarityCalculator::deleteLater, Qt::QueuedConnection);
-    });
-
-    connect(thread, &QThread::finished, similarityCalculator, &QObject::deleteLater);
-    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-
-    thread->start();
+    connect(task, &SimilarityCalculationTask::similarityCalculationFinished, this, &MainWindow::handleSimilarityCalculationFinished, Qt::QueuedConnection);
+    task->setAutoDelete(false);
+    QThreadPool::globalInstance()->start(task);
 }
 
 void MainWindow::handleSimilarityCalculationFinished(const ComparisonResult &result, const double &similarityPercentage) {
     ui->similarityPercentageLabel->setText(QString("Similarity: %1%").arg(similarityPercentage));
 
-    //hide
-    _databaseManager->storeComparisonResult(result.getScreenshot1(), result.getScreenshot2(), result.getHash1(), result.getHash2(), similarityPercentage);
+    _databaseManager->storeComparisonResult(result, similarityPercentage);
+
+    SimilarityCalculationTask *task = qobject_cast<SimilarityCalculationTask*>(sender());
+    if (task) {
+        task->deleteLater();
+    }
 }
 
 void setScreenshotLabelImage(QLabel *label, const QImage &image) {

@@ -16,8 +16,7 @@ public:
     ~DatabaseManager();
 
     void initialize();
-    void storeComparisonResult(const QImage &screenshot1, const QImage &screenshot2,
-                               const QByteArray &hash1, const QByteArray &hash2, const double &similarity);
+    void storeComparisonResult(const ComparisonResult &comparisonResult, const double &similarity);
     QList<ComparisonResult> getComparisonResults();
 
 private:

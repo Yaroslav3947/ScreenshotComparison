@@ -2,12 +2,12 @@
 
 #include <QThread>
 #include <QMainWindow>
-
+#include <QThreadPool>
 
 #include "screenshotsnap.h"
 #include "imagecomparator.h"
 #include "databasemanager.h"
-#include "similaritycalculator.h"
+#include "SimilarityCalculationTask.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -25,12 +25,14 @@ private slots:
     void startSnap();
     void stopSnap();
     void manageNewScreenshot(const QImage &screenshot);
-//    void updateSimilarityPercentage(double similarityPercentage);
     void handleSimilarityCalculationFinished(const ComparisonResult &result, const double &similarityPercentage);
 
 private:
+    QPixmap getCurrentPixmap();
     void displayLastScreenshot();
     void connectSignalsAndSlots();
+    void setLabelImage(QLabel *label, const QImage &image);
+
 
     std::unique_ptr<ImageComparator> _imageComparator;
     std::unique_ptr<ScreenshotSnap> _screenshotSnap;

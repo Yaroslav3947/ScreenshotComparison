@@ -3,7 +3,6 @@
 #include <QImage>
 #include <QObject>
 
-
 class SimilarityCalculator : public QObject {
     Q_OBJECT
 public:
@@ -11,8 +10,5 @@ public:
     ~SimilarityCalculator() = default;
     double getSimilarityPercentage(const QImage &image1, const QImage &image2);
 
-signals:
-    void similarityPercentageCalculated(double similarityPercentage);
-    void calculationFinished();
 };
 

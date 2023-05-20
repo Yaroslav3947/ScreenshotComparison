@@ -18,6 +18,7 @@ SOURCES += \
     similaritycalculator.cpp
 
 HEADERS += \
+    SimilarityCalculationTask.h \
     comparisonresult.h \
     databasemanager.h \
     imagecomparator.h \
@@ -27,6 +28,8 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui
+
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

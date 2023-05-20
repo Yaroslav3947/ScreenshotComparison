@@ -23,8 +23,7 @@ void DatabaseManager::initialize() {
     }
 }
 
-void DatabaseManager::storeComparisonResult(const QImage &screenshot1, const QImage &screenshot2,
-                                            const QByteArray &hash1, const QByteArray &hash2, const double &similarity) {
+void DatabaseManager::storeComparisonResult(const ComparisonResult &comparisonResult, const double &similarityPercentage) {
     QSqlDatabase database = QSqlDatabase::database();
 
     if (!database.isValid()) {
@@ -39,18 +38,18 @@ void DatabaseManager::storeComparisonResult(const QImage &screenshot1, const QIm
     QByteArray byteArray1;
     QBuffer buffer1(&byteArray1);
     buffer1.open(QIODevice::WriteOnly);
-    screenshot1.save(&buffer1, "PNG");
+    comparisonResult.getScreenshot1().save(&buffer1, "PNG");
 
     QByteArray byteArray2;
     QBuffer buffer2(&byteArray2);
     buffer2.open(QIODevice::WriteOnly);
-    screenshot2.save(&buffer2, "PNG");
+    comparisonResult.getScreenshot2().save(&buffer2, "PNG");
 
     query.bindValue(":image1", byteArray1);
     query.bindValue(":image2", byteArray2);
-    query.bindValue(":hash1", hash1);
-    query.bindValue(":hash2", hash2);
-    query.bindValue(":similarity", similarity);
+    query.bindValue(":hash1", comparisonResult.getHash1());
+    query.bindValue(":hash2", comparisonResult.getHash2());
+    query.bindValue(":similarity", similarityPercentage);
 
     if (!query.exec()) {
         QMessageBox::warning(nullptr, "Error", "Problems executing query");
