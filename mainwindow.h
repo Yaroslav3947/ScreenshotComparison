@@ -1,10 +1,13 @@
 #pragma once
 
+#include <QThread>
 #include <QMainWindow>
+
 
 #include "screenshotsnap.h"
 #include "imagecomparator.h"
 #include "databasemanager.h"
+#include "similaritycalculator.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -22,6 +25,8 @@ private slots:
     void startSnap();
     void stopSnap();
     void manageNewScreenshot(const QImage &screenshot);
+//    void updateSimilarityPercentage(double similarityPercentage);
+    void handleSimilarityCalculationFinished(const ComparisonResult &result, const double &similarityPercentage);
 
 private:
     void displayLastScreenshot();

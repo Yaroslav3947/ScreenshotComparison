@@ -11,6 +11,5 @@ public:
     explicit ImageComparator(QObject *parent = nullptr);
     ~ImageComparator() = default;
 
-    double getSimilarityPercentage(const QImage &image1, const QImage &image2);
     QByteArray calculateHash(const QImage &screenshot);
 };

@@ -14,14 +14,16 @@ SOURCES += \
     imagecomparator.cpp \
     main.cpp \
     mainwindow.cpp \
-    screenshotsnap.cpp
+    screenshotsnap.cpp \
+    similaritycalculator.cpp
 
 HEADERS += \
     comparisonresult.h \
     databasemanager.h \
     imagecomparator.h \
     mainwindow.h \
-    screenshotsnap.h
+    screenshotsnap.h \
+    similaritycalculator.h
 
 FORMS += \
     mainwindow.ui

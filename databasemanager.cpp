@@ -1,4 +1,5 @@
 #include "databasemanager.h"
+#include "qapplication.h"
 
 
 DatabaseManager::DatabaseManager(QObject *parent)
@@ -14,8 +15,7 @@ DatabaseManager::~DatabaseManager() {
 void DatabaseManager::initialize() {
     _database = QSqlDatabase::addDatabase("QSQLITE");
 
-    ////TODO: hardcode, find out the solution
-    _database.setDatabaseName("C:/Users/Yaroslav/Documents/ScreenshotComparison/snapshots.db");
+    _database.setDatabaseName("snapshots.db");
 
     if (!_database.open()) {
         QMessageBox::warning(nullptr, "Error", "Problems initializing snapshots.db");
