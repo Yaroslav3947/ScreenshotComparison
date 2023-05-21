@@ -1,8 +1,9 @@
 #pragma once
 
-#include <QTimer>
 #include <QObject>
 #include <QScreen>
+#include <QTimer>
+#include <memory>
 
 #include "QApplication"
 

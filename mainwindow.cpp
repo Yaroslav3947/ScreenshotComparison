@@ -1,10 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow) {
+    , ui(new Ui::MainWindow)
+{
     ui->setupUi(this);
 
     _imageComparator = std::make_unique<ImageComparator>(this);
@@ -43,7 +43,7 @@ void MainWindow::stopSnap() {
 }
 
 QPixmap MainWindow::getCurrentPixmap() {
-    return ui->currentScreenshotLabel->pixmap();
+    return *ui->currentScreenshotLabel->pixmap();
 }
 
 void MainWindow::manageNewScreenshot(const QImage &newScreenshot) {
@@ -83,7 +83,13 @@ void MainWindow::displayLastScreenshot() {
         const QImage &lastImage = comparisonResult.last().getScreenshot1();
         setScreenshotLabelImage(ui->currentScreenshotLabel, lastImage);
     } else {
-        QMessageBox::warning(this, "Error", "No screenshots in the database!");
+        QMessageBox::warning(this, "Error", "No screenshots in the database!, Creating new one");
+
+        QScreen *screen = QGuiApplication::primaryScreen();
+        if (screen) {
+            QImage screenshot = screen->grabWindow(0).toImage();
+            setScreenshotLabelImage(ui->currentScreenshotLabel, screenshot);
+        }
     }
 }
 

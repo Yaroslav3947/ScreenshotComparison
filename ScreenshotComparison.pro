@@ -29,7 +29,12 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../opencv/build/x64/vc15/lib/ -lopencv_world460
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../opencv/build/x64/vc15/lib/ -lopencv_world460d
+else:unix: LIBS += -L$$PWD/../../../../opencv/build/x64/vc15/lib/ -lopencv_world460
 
+INCLUDEPATH += $$PWD/../../../../opencv/build/include
+DEPENDPATH += $$PWD/../../../../opencv/build/include
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

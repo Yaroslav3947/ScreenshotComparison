@@ -11,10 +11,10 @@ public:
                      const QByteArray &hash1,
                      const QByteArray &hash2);
 
-    void setScreenshot1(QImage screenshot1);
-    void setScreenshot2(QImage screenshot2);
-    void setHash1(QByteArray hash1);
-    void setHash2(QByteArray hash2);
+    void setScreenshot1(const QImage &screenshot1);
+    void setScreenshot2(const QImage &screenshot2);
+    void setHash1(const QByteArray &hash1);
+    void setHash2(const QByteArray &hash2);
 
     QImage getScreenshot1() const;
     QImage getScreenshot2() const;

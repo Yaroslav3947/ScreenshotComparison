@@ -1,12 +1,12 @@
 #pragma once
 
-#include <QPixmap>
+#include <QDebug>
 #include <QObject>
+#include <QPixmap>
 #include <QRunnable>
 
 #include "comparisonresult.h"
 #include "imagecomparator.h"
-
 #include "similaritycalculator.h"
 
 class SimilarityCalculationTask : public QObject, public QRunnable {
@@ -18,7 +18,8 @@ public:
 
     void run() override {
         SimilarityCalculator similarityCalculator;
-        double similarityPercentage = similarityCalculator.getSimilarityPercentage(_newScreenshot, _currentPixmap.toImage());
+        double similarityPercentage
+            = similarityCalculator.getSimilarityPercentage(_newScreenshot, _currentPixmap.toImage());
         QByteArray hash1 = _imageComparator->calculateHash(_newScreenshot);
         QByteArray hash2 = _imageComparator->calculateHash(_currentPixmap.toImage());
 

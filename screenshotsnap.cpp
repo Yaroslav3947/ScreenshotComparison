@@ -1,8 +1,10 @@
 #include "screenshotsnap.h"
-
+#include "qimage.h"
+#include "qpixmap.h"
 
 ScreenshotSnap::ScreenshotSnap(QObject *parent)
-    :QObject(parent){
+    : QObject(parent)
+{
     _timer = std::make_unique<QTimer>(this);
     connect(_timer.get(), &QTimer::timeout, this, &ScreenshotSnap::snapScreen);
 }
