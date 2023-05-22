@@ -10,6 +10,6 @@ ScreenshotComparison is an application written in C++ using the QT framework and
 - A database containing all screenshots, associated hashes, and similarity percentages.
 - Program loads last screenshots from database when program starts.
 ## Requirements ##
-Windows operating system to run.
+Windows/Unix operating system to run.
 ## Contacts ##
 Contact email: kogutyaroslav3947@gmail.com
