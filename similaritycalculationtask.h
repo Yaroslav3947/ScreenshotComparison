@@ -7,19 +7,24 @@
 
 #include "comparisonresult.h"
 #include "imagecomparator.h"
-#include "similaritycalculator.h"
 
-class SimilarityCalculationTask : public QObject, public QRunnable {
+class SimilarityCalculationTask : public QObject, public QRunnable
+{
     Q_OBJECT
 
 public:
-    SimilarityCalculationTask(const QImage &newScreenshot, const QPixmap &currentPixmap, ImageComparator *imageComparator)
-        : _newScreenshot(newScreenshot), _currentPixmap(currentPixmap), _imageComparator(imageComparator) {}
+    SimilarityCalculationTask(const QImage &newScreenshot, const QPixmap &currentPixmap)
+        : _newScreenshot(newScreenshot)
+        , _currentPixmap(currentPixmap)
+    {
+        _imageComparator = std::make_unique<ImageComparator>();
+    }
 
-    void run() override {
-        SimilarityCalculator similarityCalculator;
+    void run() override
+    {
         double similarityPercentage
-            = similarityCalculator.getSimilarityPercentage(_newScreenshot, _currentPixmap.toImage());
+            = _imageComparator->getSimilarityPercentage(_newScreenshot, _currentPixmap.toImage());
+
         QByteArray hash1 = _imageComparator->calculateHash(_newScreenshot);
         QByteArray hash2 = _imageComparator->calculateHash(_currentPixmap.toImage());
 
@@ -38,5 +43,5 @@ signals:
 private:
     QImage _newScreenshot;
     QPixmap _currentPixmap;
-    ImageComparator* _imageComparator;
+    std::unique_ptr<ImageComparator> _imageComparator;
 };

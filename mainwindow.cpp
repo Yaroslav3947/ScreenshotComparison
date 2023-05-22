@@ -52,7 +52,7 @@ void MainWindow::manageNewScreenshot(const QImage &newScreenshot) {
     setLabelImage(ui->currentScreenshotLabel, newScreenshot);
     setLabelImage(ui->previousScreenshotLabel, currentPixmap.toImage());
 
-    SimilarityCalculationTask* task = new SimilarityCalculationTask(newScreenshot, currentPixmap, _imageComparator.get());
+    SimilarityCalculationTask *task = new SimilarityCalculationTask(newScreenshot, currentPixmap);
 
     connect(task, &SimilarityCalculationTask::similarityCalculationFinished, this, &MainWindow::handleSimilarityCalculationFinished, Qt::QueuedConnection);
     task->setAutoDelete(false);
@@ -76,19 +76,21 @@ void setScreenshotLabelImage(QLabel *label, const QImage &image) {
     label->setScaledContents(true);
 }
 
-void MainWindow::displayLastScreenshot() {
-    QList<ComparisonResult> comparisonResult = _databaseManager->getComparisonResults();
+void MainWindow::displayLastScreenshot()
+{
+    QImage lastScreenshot = _databaseManager->getLastScreenshot();
 
-    if (!comparisonResult.isEmpty()) {
-        const QImage &lastImage = comparisonResult.last().getScreenshot1();
-        setScreenshotLabelImage(ui->currentScreenshotLabel, lastImage);
+    if (lastScreenshot != QImage()) {
+        setScreenshotLabelImage(ui->currentScreenshotLabel, lastScreenshot);
     } else {
-        QMessageBox::warning(this, "Error", "No screenshots in the database!, Creating new one");
+        QMessageBox::warning(this, "Error", "No screenshots in the database, creating new one");
 
         QScreen *screen = QGuiApplication::primaryScreen();
         if (screen) {
-            QImage screenshot = screen->grabWindow(0).toImage();
-            setScreenshotLabelImage(ui->currentScreenshotLabel, screenshot);
+            QImage newScreenshot = screen->grabWindow(0).toImage();
+            _databaseManager->storeScreenshot(newScreenshot,
+                                              _imageComparator->calculateHash(newScreenshot));
+            setScreenshotLabelImage(ui->currentScreenshotLabel, newScreenshot);
         }
     }
 }

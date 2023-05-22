@@ -1,5 +1,4 @@
 #include "databasemanager.h"
-#include "qapplication.h"
 
 
 DatabaseManager::DatabaseManager(QObject *parent)
@@ -32,7 +31,32 @@ void DatabaseManager::initialize()
                "similarity REAL)");
 
     query.exec("CREATE TABLE IF NOT EXISTS images "
-               "(id INTEGER PRIMARY KEY AUTOINCREMENT, image BLOB, hash BLOB)");
+               "(id INTEGER PRIMARY KEY AUTOINCREMENT, image BLOB, hash TEXT)");
+}
+
+void DatabaseManager::storeScreenshot(const QImage &screenshot, const QByteArray &hash)
+{
+    QSqlDatabase database = QSqlDatabase::database();
+
+    if (!database.isValid()) {
+        QMessageBox::warning(nullptr, "Error", "Problems opening snapshots.db");
+        return;
+    }
+
+    QSqlQuery query(database);
+
+    query.prepare("INSERT INTO images (image, hash) VALUES (:image, :hash)");
+    QByteArray byteArray1;
+    QBuffer buffer1(&byteArray1);
+    buffer1.open(QIODevice::WriteOnly);
+    screenshot.save(&buffer1, "PNG");
+    query.bindValue(":image", byteArray1);
+    query.bindValue(":hash", hash);
+
+    if (!query.exec()) {
+        QMessageBox::warning(nullptr, "Error", "Problems storing image and hash");
+        return;
+    }
 }
 
 void DatabaseManager::storeComparisonResult(const ComparisonResult &comparisonResult,
@@ -89,44 +113,26 @@ void DatabaseManager::storeComparisonResult(const ComparisonResult &comparisonRe
     }
 }
 
-QList<ComparisonResult> DatabaseManager::getComparisonResults()
+QImage DatabaseManager::getLastScreenshot()
 {
-    QList<ComparisonResult> comparisonResults;
+    QImage lastScreenshot = QImage();
 
     QSqlQuery query(_database);
-    query.prepare("SELECT cr.id, i1.image AS image1, i2.image AS image2, i1.hash AS hash1, i2.hash "
-                  "AS hash2, cr.similarity "
+    query.prepare("SELECT i.image "
                   "FROM comparison_results cr "
-                  "JOIN images i1 ON cr.image1ID = i1.id "
-                  "JOIN images i2 ON cr.image2ID = i2.id");
+                  "JOIN images i ON cr.image2ID = i.id "
+                  "ORDER BY cr.id DESC "
+                  "LIMIT 1");
 
     if (!query.exec()) {
         QMessageBox::warning(nullptr, "Error", "Problems getting data from snapshots.db");
-        return comparisonResults;
+        return lastScreenshot;
     }
 
-    while (query.next()) {
-        ComparisonResult result;
-
-        QByteArray image1Data = query.value("image1").toByteArray();
-        QByteArray image2Data = query.value("image2").toByteArray();
-
-        QImage image1;
-        image1.loadFromData(image1Data);
-
-        QImage image2;
-        image2.loadFromData(image2Data);
-
-        QByteArray hash1 = query.value("hash1").toByteArray();
-        QByteArray hash2 = query.value("hash2").toByteArray();
-
-        result.setScreenshot1(image1);
-        result.setScreenshot2(image2);
-        result.setHash1(hash1);
-        result.setHash2(hash2);
-
-        comparisonResults.append(result);
+    if (query.next()) {
+        QByteArray imageData = query.value("image").toByteArray();
+        lastScreenshot.loadFromData(imageData);
     }
 
-    return comparisonResults;
+    return lastScreenshot;
 }

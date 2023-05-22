@@ -7,6 +7,7 @@
 #include <QSqlDatabase>
 
 #include "comparisonresult.h"
+#include "qapplication.h"
 
 class DatabaseManager : public QObject
 {
@@ -16,8 +17,9 @@ public:
     ~DatabaseManager();
 
     void initialize();
+    void storeScreenshot(const QImage &screenshot, const QByteArray &hash);
     void storeComparisonResult(const ComparisonResult &comparisonResult, const double &similarity);
-    QList<ComparisonResult> getComparisonResults();
+    QImage getLastScreenshot();
 
 private:
     QSqlDatabase _database;
